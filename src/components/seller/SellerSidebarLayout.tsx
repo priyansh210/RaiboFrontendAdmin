@@ -13,7 +13,7 @@ const sidebarMenu = [
   {
     label: 'My Company', icon: <Users size={18} />, children: [
       { label: 'My Shops', to: '/seller/company/shops' },
-      { label: 'My Items', to: '/seller/company/items' },
+      { label: 'KYC', to: '/seller/company/kyc' }, // Added KYC link
     ]
   },
   {

@@ -9,6 +9,7 @@ import {
   CreateCheckoutSessionRequest
 } from '../models/external/StripeModels';
 import { RaiBoard } from '@/models/internal/RaiBoard';
+import { ExternalShop } from '../models/external/ShopExternalModels';
 
 class ApiService {
   private baseURL: string;
@@ -598,6 +599,18 @@ class ApiService {
     });
   }
 
+    // KYC submission method
+    async submitKYC(formData: FormData) {
+      return this.request('/api/v1/kyc/submit', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          // Let browser set Content-Type for FormData
+        }
+      });
+    }
+  
+
   async getDummyUserRooms() {
     // Return dummy rooms data
     const dummyRooms = [
@@ -700,6 +713,35 @@ class ApiService {
       method: 'DELETE',
     });
   }
+    // Dummy Shop/Company APIs
+    async getAllShops(): Promise<any[]> {
+      // Simulate fetching external shops
+      return Promise.resolve([
+        {
+          id: 'shop-1',
+          name: 'Acme Furniture',
+          address: '123 Main St',
+          owner: 'John Doe',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z',
+        },
+        {
+          id: 'shop-2',
+          name: 'Modern Living',
+          address: '456 Elm St',
+          owner: 'Jane Smith',
+          created_at: '2024-01-02T00:00:00Z',
+          updated_at: '2024-01-02T00:00:00Z',
+        },
+      ]);
+    }
+  
+    async getShopById(shopId: string): Promise<any | undefined> {
+      // Simulate fetching a single external shop
+      const shops = await this.getAllShops();
+      return shops.find((shop) => shop.id === shopId);
+    }
+
 }
 
 export const apiService = new ApiService();

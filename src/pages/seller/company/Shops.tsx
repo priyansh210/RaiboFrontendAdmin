@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { CompanyService, Shop } from '../../../services/CompanyService';
+import { CompanyService } from '../../../services/CompanyService';
+import { Shop } from '../../../models/internal/ShopInternalModels';
+import SellerSidebarLayout, { useSellerSidebar } from '../../../components/seller/SellerSidebarLayout';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Search, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Shops = () => {
   const [shops, setShops] = useState<Shop[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { collapsed } = useSellerSidebar();
 
   useEffect(() => {
     CompanyService.getAllShops()
@@ -11,27 +20,72 @@ const Shops = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-8">Loading shops...</div>;
+  const filteredShops = shops.filter((shop) =>
+    shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    shop.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    shop.owner.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">My Shops</h2>
-      {shops.length === 0 ? (
-        <div>No shops found.</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {shops.map((shop) => (
-            <div key={shop.id} className="bg-white rounded shadow p-4">
-              <h3 className="text-lg font-semibold mb-2">{shop.name}</h3>
-              <p className="text-sm text-gray-600 mb-1">Location: {shop.location}</p>
-              <p className="text-sm text-gray-600 mb-1">Owner: {shop.owner}</p>
-              <p className="text-sm text-gray-600 mb-1">Contact: {shop.contact}</p>
-              <p className="text-sm text-gray-600">Description: {shop.description}</p>
+    <SellerSidebarLayout>
+      <div className="transition-all duration-300 min-h-screen bg-cream flex justify-center items-start py-10 px-2 sm:px-4">
+        <div className="w-full max-w-6xl">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">My Shops</h2>
+            {/* Add Shop button can be added here if needed */}
+          </div>
+          {/* Search */}
+          <div className="mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search shops..."
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-          ))}
+          </div>
+          {/* Shops Grid */}
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-terracotta"></div>
+            </div>
+          ) : filteredShops.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredShops.map((shop) => (
+                <Card key={shop.id} className="bg-white border-taupe/20 hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="font-semibold">{shop.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-2 text-sm text-gray-600">Location: {shop.location}</div>
+                    <div className="mb-2 text-sm text-gray-600">Owner: {shop.owner}</div>
+                    <div className="mb-2 text-sm text-gray-600">Contact: {shop.contact}</div>
+                    <div className="mb-2 text-sm text-gray-600 line-clamp-2">Description: {shop.description}</div>
+                    <div className="flex justify-end">
+                      <Link to={`/seller/shops/${shop.id}`}>
+                        <Button variant="outline" size="sm" className="border-terracotta text-terracotta hover:bg-terracotta hover:text-white flex items-center gap-1">
+                          <Eye size={14} />
+                          View Details
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-medium text-charcoal mb-2">No shops found</h3>
+              <p className="text-earth mb-6">
+                {searchQuery ? 'Try adjusting your search terms' : 'You have not added any shops yet.'}
+              </p>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </SellerSidebarLayout>
   );
 };
 

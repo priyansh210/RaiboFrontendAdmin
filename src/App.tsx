@@ -21,12 +21,12 @@ import SellerProducts from './pages/seller/SellerProducts';
 import SellerProductForm from './pages/seller/SellerProductForm';
 import SellerProductPreview from './pages/seller/SellerProductPreview';
 import Shops from './pages/seller/company/Shops';
-import Items from './pages/seller/company/Items';
 import InventoryForecast from './pages/seller/inventory/Forecast';
 import Payments from './pages/seller/Payments';
 import Orders from './pages/seller/Orders';
 import Logistics from './pages/seller/Logistics';
 import Reviews from './pages/seller/Reviews';
+import KYCPage from './pages/seller/company/KYC';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -74,7 +74,7 @@ const AppContent = () => {
 
                 {/* Seller Sidebar Dummy Routes */}
                 <Route path="/seller/company/shops" element={<Shops />} />
-                <Route path="/seller/company/items" element={<Items />} />
+                <Route path="/seller/company/kyc" element={<KYCPage />} />
                 <Route path="/seller/inventory/forecast" element={<InventoryForecast />} />
                 <Route path="/seller/payments" element={<Payments />} />
                 <Route path="/seller/orders" element={<Orders />} />

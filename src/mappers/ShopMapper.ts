@@ -1,5 +1,5 @@
-import { ExternalShop } from '../models/company/external/ShopExternalModels';
-import { Shop } from '../models/company/internal/ShopInternalModels';
+import { ExternalShop } from '../models/external/ShopExternalModels';
+import { Shop } from '../models/internal/ShopInternalModels';
 
 export class ShopMapper {
   static toInternal(external: ExternalShop): Shop {

@@ -1,6 +1,6 @@
-import { apiService } from '../../../RaiboFrontend/src/services/ApiService';
-import { ExternalShop } from '../models/company/external/ShopExternalModels';
-import { Shop } from '../models/company/internal/ShopInternalModels';
+import { apiService } from '@/services/ApiService';
+import { ExternalShop } from '../models/external/ShopExternalModels';
+import { Shop } from '../models/internal/ShopInternalModels';
 import { ShopMapper } from '../mappers/ShopMapper';
 
 // Service for company/shop-related logic
