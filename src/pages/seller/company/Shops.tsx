@@ -6,13 +6,22 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Search, Eye } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 
 const Shops = () => {
   const [shops, setShops] = useState<Shop[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const { collapsed } = useSellerSidebar();
+  const { user, roles } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user || !roles.includes('seller')) {
+      navigate('/', { replace: true });
+    }
+  }, [user, roles, navigate]);
 
   useEffect(() => {
     CompanyService.getAllShops()
@@ -32,7 +41,11 @@ const Shops = () => {
         <div className="w-full max-w-6xl">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">My Shops</h2>
-            {/* Add Shop button can be added here if needed */}
+            <Link to="/seller/shops/create">
+              <Button variant="outline" className="border-terracotta text-terracotta hover:bg-terracotta hover:text-white">
+                + Add New Shop
+              </Button>
+            </Link>
           </div>
           {/* Search */}
           <div className="mb-6">
@@ -63,11 +76,16 @@ const Shops = () => {
                     <div className="mb-2 text-sm text-gray-600">Owner: {shop.owner}</div>
                     <div className="mb-2 text-sm text-gray-600">Contact: {shop.contact}</div>
                     <div className="mb-2 text-sm text-gray-600 line-clamp-2">Description: {shop.description}</div>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-2">
                       <Link to={`/seller/shops/${shop.id}`}>
                         <Button variant="outline" size="sm" className="border-terracotta text-terracotta hover:bg-terracotta hover:text-white flex items-center gap-1">
                           <Eye size={14} />
                           View Details
+                        </Button>
+                      </Link>
+                      <Link to={`/seller/shops/${shop.id}/edit`}>
+                        <Button variant="outline" size="sm" className="border-taupe text-taupe hover:bg-taupe hover:text-white flex items-center gap-1">
+                          Edit
                         </Button>
                       </Link>
                     </div>

@@ -36,7 +36,7 @@ export class GoogleAuthService {
     });
   }
 
-  public async signInWithGoogle(): Promise<{ access_token: string; user: any }> {
+  public async signInWithGoogle(role?: string): Promise<{ access_token: string; user: any }> {
     if (!window.google) {
       throw new Error('Google Sign-In not initialized');
     }
@@ -52,8 +52,8 @@ export class GoogleAuthService {
           }
 
           try {
-            // Send access token to backend
-            const authResult = await this.handleGoogleToken(response.access_token);
+            // Send access token to backend with role
+            const authResult = await this.handleGoogleToken(response.access_token, role);
             resolve({ access_token: authResult.access_token, user: authResult.user });
           } catch (error) {
             reject(error);
@@ -65,9 +65,8 @@ export class GoogleAuthService {
     });
   }
 
-  private async handleGoogleToken(googleAccessToken: string): Promise<any> {
-    const data = await apiService.googleLogin(googleAccessToken);
-    
+  private async handleGoogleToken(googleAccessToken: string, role?: string): Promise<any> {
+    const data = await apiService.googleLogin(googleAccessToken, role);
     if (!data) {
       throw new Error('Failed to authenticate with backend');
     }

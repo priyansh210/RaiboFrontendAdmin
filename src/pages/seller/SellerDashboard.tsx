@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SellerSidebarLayout, { useSellerSidebar } from '../../components/seller/SellerSidebarLayout';
 import { BarChart3, Package, ShoppingBag, Star, Users } from 'lucide-react';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const SellerDashboard = () => {
   const { collapsed } = useSellerSidebar();
+  const { user, isSeller } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user || !isSeller) {
+      navigate('/', { replace: true });
+    }
+  }, [user, isSeller, navigate]);
 
   return (
     <SellerSidebarLayout>

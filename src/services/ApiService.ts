@@ -128,14 +128,17 @@ class ApiService {
     });
   }
 
-  async googleLogin(access_token: string) {
+  /**
+   * Google login with role support
+   */
+  async googleLogin(access_token: string, role?: string) {
     return this.request(API_ENDPOINTS.AUTH.GOOGLE_LOGIN, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({ access_token: access_token }), // Passport Google strategy expects access_token
+      body: JSON.stringify({ access_token: access_token, role }), // Include role in body
     });
   }
 
@@ -714,32 +717,228 @@ class ApiService {
     });
   }
     // Dummy Shop/Company APIs
-    async getAllShops(): Promise<any[]> {
+    async getAllShops(): Promise<ExternalShop[]> {
       // Simulate fetching external shops
       return Promise.resolve([
         {
           id: 'shop-1',
           name: 'Acme Furniture',
-          address: '123 Main St',
+          location: '123 Main St',
           owner: 'John Doe',
-          created_at: '2024-01-01T00:00:00Z',
-          updated_at: '2024-01-01T00:00:00Z',
+          contact: '123-456-7890',
+          description: 'A great shop for furniture.',
         },
         {
           id: 'shop-2',
           name: 'Modern Living',
-          address: '456 Elm St',
+          location: '456 Elm St',
           owner: 'Jane Smith',
-          created_at: '2024-01-02T00:00:00Z',
-          updated_at: '2024-01-02T00:00:00Z',
+          contact: '987-654-3210',
+          description: 'Modern furniture and decor.',
         },
       ]);
     }
   
-    async getShopById(shopId: string): Promise<any | undefined> {
+    async getShopById(shopId: string): Promise<ExternalShop | undefined> {
       // Simulate fetching a single external shop
       const shops = await this.getAllShops();
       return shops.find((shop) => shop.id === shopId);
+    }
+
+    /**
+     * Create a new shop (dummy implementation)
+     * TODO: Replace with real API call
+     */
+    async createShop(shopData: Omit<ExternalShop, 'id'>): Promise<ExternalShop> {
+      // Simulate creating a shop and returning it with a new id
+      return Promise.resolve({
+        id: `shop-${Date.now()}`,
+        ...shopData,
+      });
+    }
+
+    /**
+     * Update an existing shop (dummy implementation)
+     * TODO: Replace with real API call
+     */
+    async updateShop(shopId: string, shopData: Partial<ExternalShop>): Promise<ExternalShop> {
+      // Simulate updating a shop and returning the updated shop
+      return Promise.resolve({
+        id: shopId,
+        name: shopData.name || 'Updated Shop',
+        location: shopData.location || 'Updated Location',
+        owner: shopData.owner || 'Updated Owner',
+        contact: shopData.contact || 'Updated Contact',
+        description: shopData.description || 'Updated Description',
+      });
+    }
+
+    /**
+     * Get company details (dummy implementation)
+     * TODO: Replace with real API call
+     */
+    async getCompanyDetails(companyId: string) {
+      // Simulate fetching company details
+      return Promise.resolve({
+        name: 'Acme Furniture',
+        profilePhoto: 'https://placehold.co/96x96',
+        address: '123 Main St, Springfield',
+        locationLink: 'https://maps.google.com/?q=123+Main+St',
+        description: 'A leading furniture company.',
+        code: companyId || 'COMP-12345',
+      });
+    }
+
+    /**
+     * Update company details (dummy implementation)
+     * TODO: Replace with real API call
+     */
+    async updateCompanyDetails(companyId: string, data: any) {
+      // Simulate updating company details
+      return Promise.resolve({ success: true });
+    }
+
+    /**
+     * Upload company profile photo (dummy implementation)
+     * TODO: Replace with real image upload
+     */
+    async uploadCompanyPhoto(file: File) {
+      // Simulate image upload
+      return Promise.resolve({ url: 'https://placehold.co/96x96' });
+    }
+
+    // Analytics APIs
+    /**
+     * Get analytics dashboard data (dummy implementation)
+     * TODO: Replace with real API call
+     */
+    async getAnalyticsDashboard(companyId: string) {
+      // Simulate fetching analytics dashboard data
+      return Promise.resolve({
+        salesAnalytics: {
+          totalSales: 1247,
+          totalRevenue: 156890.50,
+          totalOrders: 892,
+          averageOrderValue: 175.89,
+          salesGrowth: 12.5,
+          revenueGrowth: 18.3,
+        },
+        productAnalytics: {
+          totalProducts: 45,
+          activeProducts: 38,
+          pendingProducts: 5,
+          rejectedProducts: 2,
+          topSellingProducts: [
+            {
+              id: 'prod-1',
+              name: 'Modern Sofa Set',
+              sales: 156,
+              revenue: 24680.00,
+              imageUrl: 'https://picsum.photos/100/100?random=1',
+            },
+            {
+              id: 'prod-2',
+              name: 'Dining Table',
+              sales: 98,
+              revenue: 19600.00,
+              imageUrl: 'https://picsum.photos/100/100?random=2',
+            },
+            {
+              id: 'prod-3',
+              name: 'Office Chair',
+              sales: 234,
+              revenue: 18720.00,
+              imageUrl: 'https://picsum.photos/100/100?random=3',
+            },
+          ],
+          categoryDistribution: [
+            { categoryId: 'cat-1', categoryName: 'Living Room', productCount: 18, percentage: 40 },
+            { categoryId: 'cat-2', categoryName: 'Bedroom', productCount: 12, percentage: 26.7 },
+            { categoryId: 'cat-3', categoryName: 'Office', productCount: 10, percentage: 22.2 },
+            { categoryId: 'cat-4', categoryName: 'Kitchen', productCount: 5, percentage: 11.1 },
+          ],
+        },
+        salesChart: {
+          period: 'monthly',
+          data: [
+            { date: '2025-01', sales: 145, revenue: 18250.00, orders: 98 },
+            { date: '2025-02', sales: 167, revenue: 21890.50, orders: 112 },
+            { date: '2025-03', sales: 189, revenue: 24567.75, orders: 134 },
+            { date: '2025-04', sales: 203, revenue: 28934.25, orders: 145 },
+            { date: '2025-05', sales: 234, revenue: 32145.80, orders: 167 },
+            { date: '2025-06', sales: 309, revenue: 51102.45, orders: 236 },
+          ],
+        },
+        revenueChart: {
+          period: 'monthly',
+          data: [
+            { date: '2025-01', revenue: 18250.00, profit: 5475.00, expenses: 12775.00 },
+            { date: '2025-02', revenue: 21890.50, profit: 6567.15, expenses: 15323.35 },
+            { date: '2025-03', revenue: 24567.75, profit: 7370.33, expenses: 17197.42 },
+            { date: '2025-04', revenue: 28934.25, profit: 8680.28, expenses: 20253.97 },
+            { date: '2025-05', revenue: 32145.80, profit: 9643.74, expenses: 22502.06 },
+            { date: '2025-06', revenue: 51102.45, profit: 15330.74, expenses: 35771.71 },
+          ],
+        },
+        lastUpdated: new Date().toISOString(),
+      });
+    }
+
+    /**
+     * Get sales analytics (dummy implementation)
+     * TODO: Replace with real API call
+     */
+    async getSalesAnalytics(companyId: string, period: string = 'monthly') {
+      return Promise.resolve({
+        totalSales: 1247,
+        totalRevenue: 156890.50,
+        totalOrders: 892,
+        averageOrderValue: 175.89,
+        salesGrowth: 12.5,
+        revenueGrowth: 18.3,
+      });
+    }
+
+    /**
+     * Get product analytics (dummy implementation)
+     * TODO: Replace with real API call
+     */
+    async getProductAnalytics(companyId: string) {
+      return Promise.resolve({
+        totalProducts: 45,
+        activeProducts: 38,
+        pendingProducts: 5,
+        rejectedProducts: 2,
+        topSellingProducts: [
+          {
+            id: 'prod-1',
+            name: 'Modern Sofa Set',
+            sales: 156,
+            revenue: 24680.00,
+            imageUrl: 'https://picsum.photos/100/100?random=1',
+          },
+          {
+            id: 'prod-2',
+            name: 'Dining Table',
+            sales: 98,
+            revenue: 19600.00,
+            imageUrl: 'https://picsum.photos/100/100?random=2',
+          },
+          {
+            id: 'prod-3',
+            name: 'Office Chair',
+            sales: 234,
+            revenue: 18720.00,
+            imageUrl: 'https://picsum.photos/100/100?random=3',
+          },
+        ],
+        categoryDistribution: [
+          { categoryId: 'cat-1', categoryName: 'Living Room', productCount: 18, percentage: 40 },
+          { categoryId: 'cat-2', categoryName: 'Bedroom', productCount: 12, percentage: 26.7 },
+          { categoryId: 'cat-3', categoryName: 'Office', productCount: 10, percentage: 22.2 },
+          { categoryId: 'cat-4', categoryName: 'Kitchen', productCount: 5, percentage: 11.1 },
+        ],
+      });
     }
 
 }

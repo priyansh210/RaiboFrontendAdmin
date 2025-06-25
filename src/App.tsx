@@ -27,6 +27,12 @@ import Orders from './pages/seller/Orders';
 import Logistics from './pages/seller/Logistics';
 import Reviews from './pages/seller/Reviews';
 import KYCPage from './pages/seller/company/KYC';
+import ShopDetail from './pages/seller/company/ShopDetail';
+import CreateShop from './pages/seller/company/CreateShop';
+import EditShop from './pages/seller/company/EditShop';
+import CompanyDetails from './pages/seller/company/CompanyDetails';
+import UserAccount from './pages/seller/company/UserAccount';
+import Analytics from './pages/seller/company/Analytics';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -74,12 +80,19 @@ const AppContent = () => {
 
                 {/* Seller Sidebar Dummy Routes */}
                 <Route path="/seller/company/shops" element={<Shops />} />
+                <Route path="/seller/shops/create" element={<CreateShop />} />
+                <Route path="/seller/shops/:shopId" element={<ShopDetail />} />
+                <Route path="/seller/shops/:shopId/edit" element={<EditShop />} />
                 <Route path="/seller/company/kyc" element={<KYCPage />} />
                 <Route path="/seller/inventory/forecast" element={<InventoryForecast />} />
                 <Route path="/seller/payments" element={<Payments />} />
                 <Route path="/seller/orders" element={<Orders />} />
                 <Route path="/seller/logistics" element={<Logistics />} />
                 <Route path="/seller/reviews" element={<Reviews />} />
+                <Route path="/seller/company/details" element={<CompanyDetails />} />
+                <Route path="/seller/company/analytics" element={<Analytics />} />
+                <Route path="/seller/company/account" element={<UserAccount />} />
+                <Route path="/seller/account" element={<UserAccount />} />
 
                 {/* Admin Auth & Dashboard */}
                 <Route path="/admin/login" element={<AdminLogin />} />

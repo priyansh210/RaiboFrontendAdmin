@@ -13,6 +13,8 @@ const sidebarMenu = [
   {
     label: 'My Company', icon: <Users size={18} />, children: [
       { label: 'My Shops', to: '/seller/company/shops' },
+      { label: 'Company Details', to: '/seller/company/details' },
+      { label: 'Analytics', to: '/seller/company/analytics' },
       { label: 'KYC', to: '/seller/company/kyc' }, // Added KYC link
     ]
   },
@@ -26,6 +28,7 @@ const sidebarMenu = [
   { label: 'Orders', icon: <ShoppingBag size={18} />, to: '/seller/orders' },
   { label: 'Logistics', icon: <Truck size={18} />, to: '/seller/logistics' },
   { label: 'Reviews', icon: <Star size={18} />, to: '/seller/reviews' },
+  { label: 'User Account', icon: <Settings size={18} />, to: '/seller/account' },
 ];
 
 const bottomMenuItems = [
@@ -36,10 +39,20 @@ const bottomMenuItems = [
 
 const SellerSidebarContext = createContext<{ collapsed: boolean; toggle: () => void }>({ collapsed: false, toggle: () => {} });
 
+const SIDEBAR_GROUPS_KEY = 'raibo_seller_sidebar_groups';
+
 const SellerSidebarLayout: React.FC<SellerSidebarLayoutProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({});
+  const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>(() => {
+    // Load sidebar group state from localStorage
+    try {
+      const stored = localStorage.getItem(SIDEBAR_GROUPS_KEY);
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  });
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -63,13 +76,22 @@ const SellerSidebarLayout: React.FC<SellerSidebarLayoutProps> = ({ children }) =
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Persist openGroups to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem(SIDEBAR_GROUPS_KEY, JSON.stringify(openGroups));
+  }, [openGroups]);
+
   const handleLogout = () => {
     logout();
     navigate('/seller/login');
   };
 
   const toggleGroup = (label: string) => {
-    setOpenGroups((prev) => ({ ...prev, [label]: !prev[label] }));
+    setOpenGroups((prev) => {
+      const updated = { ...prev, [label]: !prev[label] };
+      localStorage.setItem(SIDEBAR_GROUPS_KEY, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const isActivePath = (path: string) => {
